@@ -1,6 +1,6 @@
 use super::models::CreateRestaurantReviewBody;
 use crate::AppState;
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{get, post, web, HttpResponse, Responder};
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
@@ -18,26 +18,28 @@ async fn create_restaurant_review(
 }
 
 #[derive(Deserialize, ToSchema, IntoParams)]
-pub struct CreateRestaurantReviewPathParams {
+pub struct GetRestaurantReviewPathParams {
     restaurant_id: u32,
 }
 
-#[utoipa::path(
-    params(CreateRestaurantReviewPathParams),
-    request_body = CreateRestaurantReviewBody,
-)]
-#[post("/restaurants/{restaurant_id}/review")]
-async fn create_restaurant_review_with_path_params(
-    path_params: web::Path<CreateRestaurantReviewPathParams>,
-    body: web::Json<CreateRestaurantReviewBody>,
+#[derive(Deserialize, ToSchema, IntoParams)]
+pub struct GetRestaurantReviewQueryParams {
+    menu_item: Option<String>,
+}
+
+#[utoipa::path(params(GetRestaurantReviewPathParams, GetRestaurantReviewQueryParams))]
+#[get("/restaurants/{restaurant_id}/review")]
+async fn get_restaurant_review_with_path_params(
+    path_params: web::Path<GetRestaurantReviewPathParams>,
+    query_params: web::Query<GetRestaurantReviewQueryParams>,
 ) -> impl Responder {
     let path_param_obj = path_params.into_inner();
-    let param_obj = body.into_inner();
+    let query_param_obj = query_params.into_inner();
 
     HttpResponse::Ok().json("TODO")
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(create_restaurant_review)
-        .service(create_restaurant_review_with_path_params);
+        .service(get_restaurant_review_with_path_params);
 }

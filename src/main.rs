@@ -10,7 +10,7 @@ use utoipa_swagger_ui::SwaggerUi;
 mod restaurants;
 use restaurants::{
     models::CreateRestaurantReviewBody,
-    services::{self, CreateRestaurantReviewPathParams},
+    services::{self, GetRestaurantReviewPathParams, GetRestaurantReviewQueryParams},
 };
 
 struct AppState {}
@@ -38,13 +38,14 @@ async fn main() -> std::io::Result<()> {
         paths(
             index,
             restaurants::services::create_restaurant_review,
-            restaurants::services::create_restaurant_review_with_path_params,
+            restaurants::services::get_restaurant_review_with_path_params,
         ),
         components(
             schemas(
                 SimpleStatus,
                 CreateRestaurantReviewBody,
-                CreateRestaurantReviewPathParams,
+                GetRestaurantReviewPathParams,
+                GetRestaurantReviewQueryParams,
             ),
         ),
         modifiers(&SecurityModifier)
